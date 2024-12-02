@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      no_cache: true
+      context: .
+      dockerfile: dev.Dockerfile
+    ports:
+      - "81:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/app
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - "my_network"
+  nginx:
+    image: nginx:latest
+    networks:
+      - "my_network"
+    environment:
+      NECROGINX_ROUTE: "test"
+      NECROGINX_PORT: "80"
+    depends_on:
+      - app
+
+networks:
+  my_network:
+    external:
+      name: "my_network"
