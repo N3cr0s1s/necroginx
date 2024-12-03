@@ -7,6 +7,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 RUN chmod +x /app/watcher.sh
 
 CMD ["/app/watcher.sh"]
