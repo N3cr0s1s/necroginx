@@ -15,6 +15,7 @@ def container_stopped(container: Container):
     logging.info(f"Container {container.name} stopped.")
     config_handler.delete_config(container.name)
     nginx_handler.reload_nginx_server()
+    registered_containers.remove(container.name)
     logging.info(f"Container {container.name} deleted.")
 
 def container_started(client: DockerClient,container: Container):
