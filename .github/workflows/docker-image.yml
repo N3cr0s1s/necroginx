@@ -30,7 +30,7 @@ jobs:
       # Check test results
       - name: Check test results
         run: |
-          docker-compose -f ./test/docker-compose.yml down
+          docker compose -f ./test/docker-compose.yml down
           if [ $(docker-compose ps -q test-runner | xargs docker inspect -f '{{.State.ExitCode}}') -ne 0 ]; then
             echo "Tests failed!"
             exit 1
