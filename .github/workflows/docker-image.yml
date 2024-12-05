@@ -26,6 +26,7 @@ jobs:
           unset DOCKER_CERT_PATH
           unset DOCKER_TLS_CONTEXT
           docker compose -f ./test/docker-compose.yml up --build --abort-on-container-exit
+          docker wait test-runner
 
       # Check test results
       - name: Check test results

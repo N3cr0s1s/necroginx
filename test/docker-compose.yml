@@ -1,33 +1,31 @@
 version: "3.9"
 services:
-  dind:
-    image: docker:24.0.6-dind
-    privileged: true
-    environment:
-      - DOCKER_TLS_CERTDIR=
-    networks:
-      - my-network
-    expose:
-      - 2375
-    ports:
-      - "2375:2375"
-    command: [ "--host=tcp://0.0.0.0:2375", "--host=unix:///var/run/docker.sock" ]
 
   test-runner:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: test_runner
-    depends_on:
-      - dind
+    container_name: test-runner
     networks:
       - my-network
     working_dir: /app
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
-      - "./:/app"
+      - ./:/app
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     command: ["python","main.py"]
+
+  necroginx:
+    build:
+      context: ../
+      dockerfile: ./Dockerfile
+    networks:
+      - my-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - 80
 
 networks:
   my-network:

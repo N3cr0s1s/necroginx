@@ -39,11 +39,14 @@ def start():
                 status = event.get("Action")
                 container_id = event.get("id")
 
-                container = client.containers.get(container_id)
-                if status in ["start"]:
-                    container_handler.container_started(client, container)
-                if status in ["stop"]:
-                    container_handler.container_stopped(container)
+                try:
+                    container = client.containers.get(container_id)
+                    if status in ["start"]:
+                        container_handler.container_started(client, container)
+                    if status in ["stop"]:
+                        container_handler.container_stopped(container)
+                except docker.errors.NotFound as e:
+                    logging.error(e)
 
     except KeyboardInterrupt:
         logging.info("Stopping listener...")
