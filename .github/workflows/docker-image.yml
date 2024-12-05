@@ -8,8 +8,38 @@ on:
 
 jobs:
 
- build-and-deploy:
+  test:
     runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Run Docker Compose
+      - name: Set up Docker Compose
+        run: |
+          apk add --no-cache py3-pip
+          pip install docker-compose
+          docker-compose -f /app/test/docker-compose.yml up --build --abort-on-container-exit
+
+      # Check test results
+      - name: Check test results
+        run: |
+          docker-compose down -f /app/test/docker-compose.yml
+          if [ $(docker-compose ps -q test-runner | xargs docker inspect -f '{{.State.ExitCode}}') -ne 0 ]; then
+            echo "Tests failed!"
+            exit 1
+          else
+            echo "Tests passed!"
+          fi
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
