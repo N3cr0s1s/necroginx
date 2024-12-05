@@ -25,12 +25,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-pip
           pip3 install docker-compose
-          docker-compose -f /app/test/docker-compose.yml up --build --abort-on-container-exit
+          docker-compose -f ./test/docker-compose.yml up --build --abort-on-container-exit
 
       # Check test results
       - name: Check test results
         run: |
-          docker-compose down -f /app/test/docker-compose.yml
+          docker-compose -f ./test/docker-compose.yml down
           if [ $(docker-compose ps -q test-runner | xargs docker inspect -f '{{.State.ExitCode}}') -ne 0 ]; then
             echo "Tests failed!"
             exit 1
