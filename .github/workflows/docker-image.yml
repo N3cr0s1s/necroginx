@@ -22,8 +22,9 @@ jobs:
       # Run Docker Compose
       - name: Set up Docker Compose
         run: |
-          apk add --no-cache py3-pip
-          pip install docker-compose
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install docker-compose
           docker-compose -f /app/test/docker-compose.yml up --build --abort-on-container-exit
 
       # Check test results
