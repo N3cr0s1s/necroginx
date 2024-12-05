@@ -15,7 +15,6 @@ services:
 
   test-runner:
     build:
-      no_cache: true
       context: .
       dockerfile: Dockerfile
     container_name: test_runner
