@@ -5,7 +5,7 @@ def create_new_config(route: str, host: str, port: str) -> str:
     conf = (
     """
 location /{route} {
-    rewrite ^/{route}(/.*)$ $1 break;
+    rewrite ^/{route}/?$ /$1/ break;  # Ezt adjuk hozzá
     proxy_pass http://{host}:{port};
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
