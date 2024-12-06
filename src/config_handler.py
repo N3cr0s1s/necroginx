@@ -5,18 +5,15 @@ def create_new_config(route: str, host: str, port: str) -> str:
     conf = (
     """
 location /{route} {
-    if ($uri = "/{route}") {
-        rewrite ^ / break;
-    }
-    
-    rewrite ^/{route}(/.*)?$ $1 break;
+    rewrite ^/{route}(/.*)$ $1 break;
     proxy_pass http://{host}:{port};
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header Connection "upgrade";
+    proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
 }
     """
             .replace("{route}", route)
